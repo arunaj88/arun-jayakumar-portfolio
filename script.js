@@ -165,11 +165,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (currentLine < lines.length) {
                 terminalBody.innerHTML += lines[currentLine] + '\n';
                 currentLine++;
-                setTimeout(typeLine, 50);
+                setTimeout(typeLine, 20);
             }
         }
 
         // Start typing after initial fade-in
-        setTimeout(typeLine, 800);
+        setTimeout(typeLine, 400);
     }
 });
