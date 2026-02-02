@@ -1,4 +1,63 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // --- Contact Form ---
+    const contactForm = document.getElementById('contact-form');
+    const formStatus = document.getElementById('form-status');
+
+    if (contactForm) {
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const submitBtn = contactForm.querySelector('.form-submit');
+            const btnText = submitBtn.querySelector('span');
+            const originalText = btnText.textContent;
+
+            // Loading state
+            submitBtn.disabled = true;
+            btnText.textContent = 'Sending...';
+
+            const formData = new FormData(contactForm);
+            const data = Object.fromEntries(formData.entries());
+
+            // Validation
+            if (!data.email.includes('@')) {
+                showStatus('Please enter a valid email address.', 'error');
+                resetBtn();
+                return;
+            }
+
+            // Backend simulation (Replace with real API endpoint if needed)
+            try {
+                await simulateSubmission(data);
+                showStatus('Message sent successfully! I will get back to you soon.', 'success');
+                contactForm.reset();
+            } catch (err) {
+                showStatus('Something went wrong. Please try again later.', 'error');
+            } finally {
+                resetBtn();
+            }
+
+            function resetBtn() {
+                submitBtn.disabled = false;
+                btnText.textContent = originalText;
+            }
+
+            function showStatus(message, type) {
+                formStatus.textContent = message;
+                formStatus.className = `form-status ${type}`;
+                formStatus.style.display = 'block';
+
+                setTimeout(() => {
+                    formStatus.style.display = 'none';
+                }, 5000);
+            }
+        });
+    }
+
+    async function simulateSubmission(data) {
+        console.log('Sending message:', data);
+        return new Promise(resolve => setTimeout(resolve, 800));
+    }
+
     // 1. Navbar Scroll Effect
     const nav = document.querySelector('.nav');
     window.addEventListener('scroll', () => {
@@ -11,14 +70,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 2. Scroll Reveal Animations (Intersection Observer)
     const revealOptions = {
-        threshold: 0.1,
-        rootMargin: "0px 0px -50px 0px"
+        threshold: 0.15,
+        rootMargin: "0px 0px -20px 0px"
     };
 
     const revealObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.classList.add('reveal-active');
+                entry.target.classList.add('active');
                 observer.unobserve(entry.target);
             }
         });
@@ -26,21 +85,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const revealElements = document.querySelectorAll('.fade-reveal');
     revealElements.forEach(el => {
-        el.style.opacity = "0";
-        el.style.transform = "translateY(30px)";
-        el.style.transition = "all 0.8s cubic-bezier(0.23, 1, 0.32, 1)";
         revealObserver.observe(el);
     });
-
-    // CSS for reveal (pushed via JS for convenience in this static build)
-    const style = document.createElement('style');
-    style.textContent = `
-        .reveal-active {
-            opacity: 1 !important;
-            transform: translateY(0) !important;
-        }
-    `;
-    document.head.appendChild(style);
 
     // 3. Smooth Scrolling for Nav Links
     document.querySelectorAll('.nav-links a, .cta-group a').forEach(anchor => {
@@ -69,4 +115,61 @@ document.addEventListener('DOMContentLoaded', () => {
 
         bgMesh.style.transform = `translate(${x * 20}px, ${y * 20}px)`;
     });
+
+    // 5. Project Filtering
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const projectCards = document.querySelectorAll('.project-card');
+
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Remove active class from all buttons
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const filter = btn.getAttribute('data-filter');
+
+            projectCards.forEach(card => {
+                const categories = card.getAttribute('data-category').split(' ');
+                if (filter === 'all' || categories.includes(filter)) {
+                    card.style.display = 'block';
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 10);
+                } else {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    setTimeout(() => {
+                        card.style.display = 'none';
+                    }, 300);
+                }
+            });
+        });
+    });
+
+    // 6. Terminal Typewriter Effect (Improved for existing content)
+    const terminalBody = document.querySelector('.terminal-body code');
+    if (terminalBody) {
+        const originalHTML = terminalBody.innerHTML;
+        terminalBody.innerHTML = '';
+        let i = 0;
+
+        // This is a simple version, for complex HTML it's better to show line by line
+        // or just use a typing animation on the container.
+        // Let's do a line-by-line reveal for better effect with syntax highlighting.
+        terminalBody.style.opacity = '1';
+        const lines = originalHTML.split('\n');
+        let currentLine = 0;
+
+        function typeLine() {
+            if (currentLine < lines.length) {
+                terminalBody.innerHTML += lines[currentLine] + '\n';
+                currentLine++;
+                setTimeout(typeLine, 50);
+            }
+        }
+
+        // Start typing after initial fade-in
+        setTimeout(typeLine, 800);
+    }
 });
