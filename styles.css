@@ -741,6 +741,40 @@ h3 {
     border-bottom: 1px solid var(--glass-border);
 }
 
+.project-mockup.project-images {
+    height: 320px;
+    padding: 2rem;
+    gap: 1.5rem;
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(30, 41, 59, 0.5));
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    perspective: 1000px;
+}
+
+.project-img {
+    height: 100%;
+    width: auto;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--glass-border);
+    transition: var(--transition-slow);
+}
+
+.project-card:hover .project-img {
+    transform: translateY(-15px) rotateY(-5deg) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
+.project-card:hover .project-img:nth-child(2) {
+    transform: translateY(-30px) rotateY(0deg) scale(1.05);
+    z-index: 2;
+}
+
+.project-card:hover .project-img:nth-child(3) {
+    transform: translateY(-15px) rotateY(5deg) scale(1.02);
+}
+
 .project-content {
     padding: 2.5rem;
     display: flex;
