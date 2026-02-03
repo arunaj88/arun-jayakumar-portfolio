@@ -147,6 +147,32 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Mobile Menu Toggle
+    const menuToggle = document.getElementById('menu-toggle');
+    const navLinksContainer = document.getElementById('nav-links');
+    const navLinks = document.querySelectorAll('.nav-links a');
+
+    if (menuToggle && navLinksContainer) {
+        menuToggle.addEventListener('click', () => {
+            navLinksContainer.classList.toggle('active');
+            const icon = menuToggle.querySelector('i');
+            if (navLinksContainer.classList.contains('active')) {
+                icon.classList.replace('fa-bars', 'fa-times');
+            } else {
+                icon.classList.replace('fa-times', 'fa-bars');
+            }
+        });
+
+        // Close menu when a link is clicked (on mobile)
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                navLinksContainer.classList.remove('active');
+                const icon = menuToggle.querySelector('i');
+                icon.classList.replace('fa-times', 'fa-bars');
+            });
+        });
+    }
+
     // 6. Terminal Typewriter Effect (Improved for existing content)
     const terminalBody = document.querySelector('.terminal-body code');
     if (terminalBody) {
